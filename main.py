@@ -50,9 +50,11 @@ fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots()
 dc_signal = np.ones_like(time)
 line, = ax.plot(time, dc_signal, label='DC Signal')
+ax.margins(x=0)
 line2, = ax2.plot(time, dc_signal, label='Dual Slope')
 plt.tick_params(axis='x', which='both', bottom=True, top=True, labelbottom=False)
 plt.xticks(np.arange(0, 5, step=0.05))
+plt.margins(x=0)
 
 # Add labels and title
 ax.set_ylabel('Voltage')
