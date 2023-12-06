@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import ttk
 import matplotlib.pyplot as plt
@@ -90,6 +89,3 @@ canvas_widget2.grid(row=2, column=3, columnspan=2)
 
 # Run the Tkinter event loop
 app.mainloop()
-
-
-
