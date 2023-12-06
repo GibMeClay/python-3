@@ -10,32 +10,40 @@ def update_plot(value):
     dc_signal = float(value) * np.ones_like(time)
     line.set_ydata(dc_signal)
     ax.relim()
-    ax.autoscale_view()
+    ax.set_ylim([-10, 10])
+    ax.set_xlim([0,5])
     canvas.draw()
-    ax.set_ylim([0, 10])
     dual_slope = np.zeros_like(time)
+    if float(value) > 0:
+        indi=1
+    else:
+        indi=-1
     for i in range(len(time)):
-        Vref = 10
+        Vref = 10*indi
         splitValue = 2.5
-        StopV= splitValue*float(value)
+        StopV= splitValue*(float(value))*indi
         if time[i] < splitValue:
-            dual_slope[i] = -time[i]*float(value)
+            dual_slope[i] = ((-time[i]*float(value))/4)
         else:
-            dual_slope[i] = -StopV + Vref*(time[i]-splitValue)
+            dual_slope[i] = ((-StopV*indi + Vref*(time[i]-splitValue))/4)
+
+    z = (Vref * splitValue + StopV) / Vref
+    x = (z - splitValue) * 400 * indi
+    n = (x/400)+splitValue
+    m=x/1000*Vref
+#TODO co ustalam tutaj
     line2.set_ydata(dual_slope)
     ax2.relim()
-    ax2.autoscale_view()
+    ax2.set_ylim([-10, 10])
+    ax2.set_xlim([0, 5])
     canvas2.draw()
-    ax2.set_ylim([-10, 1])
-    z = (Vref * splitValue + StopV) / Vref
-    x=(z-splitValue)*1000
-
+#TODO Komentarz co tutaj się dzieje
     label = tk.Label(app, text="  x = " + "%.0f" % x + "  ",)
     label.after(1, label.destroy)
     label = tk.Label(app, text="  x = " "%.0f" % x + "  ",)
     label.grid(row=2, column=3, columnspan=2, padx=10, pady=10)
 
-    label1 = tk.Label(app, text="wartość zmierzonego napięcia ze wzoru to ")
+    label1 = tk.Label(app, text="wartość zmierzonego napięcia ze wzoru to "+ "%.3f" % m)
     label1.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 # Create a time array from 0 to 1 with sufficient points
 time = np.linspace(0, 5, 1000)
@@ -65,8 +73,8 @@ ax2.set_title('Dual Slope')
 
 # Add a slider to control the DC signal amplitude
 amplitude_slider_label = ttk.Label(app, text="DC Signal Amplitude:")
-amplitude_slider = ttk.Scale(app, from_=0, to=10, orient="horizontal", command=update_plot)
-amplitude_slider.set(1)  # Initial amplitude value
+amplitude_slider = ttk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot)
+amplitude_slider.set(0)  # Initial amplitude value
 
 # Arrange widgets using grid layout
 amplitude_slider_label.grid(row=0, column=0, padx=10, pady=10)
