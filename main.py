@@ -17,21 +17,31 @@ def update_plot(value):
         indi=1
     else:
         indi=-1
-    for i in range(len(time)):
-        Vref = 10*indi
-        splitValue = 2.5
-        StopV= splitValue*(float(value))*indi
-        if time[i] < splitValue:
-            dual_slope[i] = ((-time[i]*float(value))/4)
-        else:
-            dual_slope[i] = ((-StopV*indi + Vref*(time[i]-splitValue))/4)
 
+    Vref = 10 * indi
+    splitValue = 2.5
+    StopV = splitValue * (float(value)) * indi
     z = (Vref * splitValue + StopV) / Vref
     x = (z - splitValue) * 400 * indi
     n = (x/400)+splitValue
     m=x/1000*Vref
+
+    for i in range(len(time)):
+
+        if time[i] < splitValue:
+            dual_slope[i] = ((-time[i]*float(value))/4)
+        else:
+            if time[i]<(n):
+                 dual_slope[i] = ((-StopV*indi + Vref*(time[i]-splitValue))/4)
+            else:
+                 dual_slope[i] = 0
+
+
+
 #TODO co ustalam tutaj
     line2.set_ydata(dual_slope)
+    plt.axvline(x=2.5, linestyle='dotted',linewidth= 0.5, color='red')
+    plt.axhline(y=0.5, color='r', linestyle='dotted')
     ax2.relim()
     ax2.set_ylim([-10, 10])
     ax2.set_xlim([0, 5])
@@ -40,10 +50,12 @@ def update_plot(value):
     label = tk.Label(app, text="  x = " + "%.0f" % x + "  ",)
     label.after(1, label.destroy)
     label = tk.Label(app, text="  x = " "%.0f" % x + "  ",)
-    label.grid(row=2, column=3, columnspan=2, padx=10, pady=10)
+    label.grid(row=1, column=3, columnspan=2, padx=10, pady=10)
 
-    label1 = tk.Label(app, text="wartość zmierzonego napięcia ze wzoru to "+ "%.3f" % m)
+    label1 = tk.Label(app, text="Wartość zmierzonego napięcia ze wzoru to "+ "%.3f" % m)
     label1.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
+    label2 = tk.Label(app, text="czas potrzebny rozładowywania się "+ "%.0f" % x + " mikrosekund")
+    label2.grid(row=1, column=3, columnspan=2, padx=10, pady=10)
 # Create a time array from 0 to 1 with sufficient points
 time = np.linspace(0, 5, 1000)
 
@@ -65,14 +77,17 @@ plt.margins(x=0)
 
 # Add labels and title
 ax.set_ylabel('Voltage')
+ax.set_xlabel('Czas')
 ax.set_title('DC Signal')
+ax.set_xticks([])
 ax2.set_ylabel('Voltage')
+ax2.set_xlabel('Czas')
 ax2.set_title('Dual Slope')
 
 
 # Add a slider to control the DC signal amplitude
 amplitude_slider_label = ttk.Label(app, text="DC Signal Amplitude:")
-amplitude_slider = ttk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot)
+amplitude_slider = ttk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot , length=300)
 amplitude_slider.set(0)  # Initial amplitude value
 
 # Arrange widgets using grid layout
