@@ -41,7 +41,7 @@ def update_plot(value):
 #TODO co ustalam tutaj
     line2.set_ydata(dual_slope)
     plt.axvline(x=2.5, linestyle='dotted',linewidth= 0.5, color='red')
-    plt.axhline(y=0.5, color='r', linestyle='dotted')
+    plt.axhline(y=0, color='r', linestyle='dotted' , linewidth= 0.5)
     ax2.relim()
     ax2.set_ylim([-10, 10])
     ax2.set_xlim([0, 5])
@@ -50,11 +50,10 @@ def update_plot(value):
     label = tk.Label(app, text="  x = " + "%.0f" % x + "  ",)
     label.after(1, label.destroy)
     label = tk.Label(app, text="  x = " "%.0f" % x + "  ",)
-    label.grid(row=1, column=3, columnspan=2, padx=10, pady=10)
-
     label1 = tk.Label(app, text="Wartość zmierzonego napięcia ze wzoru to "+ "%.3f" % m)
+    label2 = tk.Label(app, text="czas tx "+ "%.0f" % x + " mikrosekund")
+    label.grid(row=3, column=3, columnspan=2, padx=10, pady=10)
     label1.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
-    label2 = tk.Label(app, text="czas potrzebny rozładowywania się "+ "%.0f" % x + " mikrosekund")
     label2.grid(row=1, column=3, columnspan=2, padx=10, pady=10)
 # Create a time array from 0 to 1 with sufficient points
 time = np.linspace(0, 5, 1000)
@@ -67,6 +66,8 @@ app.title("DC Signal Plotter")
 # Create a figure and axis for the plot
 fig, ax = plt.subplots()
 fig2, ax2 = plt.subplots()
+canvas = FigureCanvasTkAgg(fig, master=app)
+canvas2 = FigureCanvasTkAgg(fig2, master=app)
 dc_signal = np.ones_like(time)
 line, = ax.plot(time, dc_signal, label='DC Signal')
 ax.margins(x=0)
@@ -98,7 +99,7 @@ amplitude_slider.grid(row=0, column=1, padx=10, pady=10)
 canvas = FigureCanvasTkAgg(fig, master=app)
 canvas_widget = canvas.get_tk_widget()
 canvas_widget.grid(row=2, column=0, columnspan=2)
-canvas2 = FigureCanvasTkAgg(fig2, master=app)
+
 canvas_widget2 = canvas2.get_tk_widget()
 canvas_widget2.grid(row=2, column=3, columnspan=2)
 
