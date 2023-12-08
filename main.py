@@ -11,7 +11,7 @@ def update_plot(value):
     else:
         indi=-1
     # Sprawdzanie wartości napięcia stałego i nadanie wartości zmiennej modygikującej napięcie referencyjne.
-    Vref = 5 * indi # Napięcie referencyjne
+    Vref = 10 * indi # Napięcie referencyjne
     splitValue = 2.5 # Stały czas pierwszej części ładowania kondensatora
     StopV = splitValue * (float(value)) * indi # Już nie pamiętam co to jest ale jest potrzebne :shrug:
     z = (Vref * splitValue + StopV) / Vref
@@ -25,7 +25,7 @@ def update_plot(value):
             dc_signal[i] = float(value)*10
         else:
             if time[i]<(n):
-                 dc_signal[i] = -Vref*10
+                 dc_signal[i] = -Vref*5
 
             else:
                  dc_signal[i] = 0
@@ -102,14 +102,14 @@ ax.set_ylabel('Napięcie  [mV]')
 ax.set_xlabel('Czas')
 ax.set_title('Napięcie wejściowe integratora')
 ax.set_xticks([])
-ax2.set_ylabel('Napięcie  [V]')
+ax2.set_ylabel('Napięcie ')
 ax2.set_xlabel('Czas')
 ax2.set_title('Napięcie wyjściowe integratora')
 
 
 # Suwak odpowiedzialny za sterowanie napięcia
 amplitude_slider_label = ttk.Label(app, text="Napięcie wejsciowe")
-amplitude_slider = tk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot ,tickinterval=1, length=700,showvalue=0) # Wygląd i zakres wartości na suwaku
+amplitude_slider = tk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot ,tickinterval=1, length=700,showvalue=0, resolution=0.01) # Wygląd i zakres wartości na suwaku
 amplitude_slider.set(0)  # Wartość początkowa na suwaku
 
 # Ustawianie lementów UI w siatce
