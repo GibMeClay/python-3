@@ -108,9 +108,6 @@ ax2.set_title('Napięcie wyjściowe integratora')
 
 
 # Suwak odpowiedzialny za sterowanie napięcia
-# TODO przepisać skale z od -100 do 100 mili voltów
-# TODO na wykresie wejściowym dodać napięcie referncyjne o znaku przeciwnym do napięcia wejściowego
-
 amplitude_slider_label = ttk.Label(app, text="Napięcie wejsciowe")
 amplitude_slider = tk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot ,tickinterval=1, length=700,showvalue=0) # Wygląd i zakres wartości na suwaku
 amplitude_slider.set(0)  # Wartość początkowa na suwaku
