@@ -56,7 +56,7 @@ def update_plot(value):
     label.after(1, label.destroy)
     label = tk.Label(app, text="  x = " "%.0f" % x + "  ",)
     label1 = tk.Label(app, text="Wartość zmierzonego napięcia ze wzoru to "+ "%.3f" % m)
-    label2 = tk.Label(app, text="czas tx "+ "%.0f" % x + " mikrosekund")
+    label2 = tk.Label(app, text="liczba zliczonych impulsów "+ "%.0f" % x)
     label.grid(row=3, column=3, columnspan=2, padx=10, pady=10)
     label1.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
     label2.grid(row=1, column=3, columnspan=2, padx=10, pady=10)
@@ -87,15 +87,17 @@ plt.margins(x=0)
 # tytuły wykresów i osi
 ax.set_ylabel('Napięcie')
 ax.set_xlabel('Czas')
-ax.set_title('Prąd stały')
+ax.set_title('Napięcie wejściowe integratora')
 ax.set_xticks([])
 ax2.set_ylabel('Napięcie')
 ax2.set_xlabel('Czas')
-ax2.set_title('Dual Slope')
+ax2.set_title('Napięcie wyjściowe integratora')
 
 
 # Suwak odpowiedzialny za sterowanie napięcia
-amplitude_slider_label = ttk.Label(app, text="DC Signal Amplitude:")
+# TODO przepisać skale z od -100 do 100 mili voltów
+# TODO na wykresie wejściowym dodać napięcie referncyjne o znaku przeciwnym do napięcia wejściowego
+amplitude_slider_label = ttk.Label(app, text="Napięcie wejsciowe")
 amplitude_slider = ttk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot , length=300) # Wygląd i zakres wartości na suwaku
 amplitude_slider.set(0)  # Wartość początkowa na suwaku
 
