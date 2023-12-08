@@ -6,29 +6,42 @@ import numpy as np
 # importowanie modułów potrzebnych do działania programów
 
 def update_plot(value):
-    # Główna funkcja aktualizująca wykresy reagująca na zmiane wartości na Sliderze
-    dc_signal = float(value) * np.ones_like(time)
-    # Funkcja prądu stałego niezmienna w czasie
-    line.set_ydata(dc_signal)
-    ax.relim()
-    ax.set_ylim([-10, 10])
-    ax.set_xlim([0,5])
-    canvas.draw()
-    # Wyświetlanie pierwszego wykresu po aktualizacji
-    dual_slope = np.zeros_like(time)
     if float(value) > 0:
         indi=1
     else:
         indi=-1
     # Sprawdzanie wartości napięcia stałego i nadanie wartości zmiennej modygikującej napięcie referencyjne.
-    Vref = 10 * indi # Napięcie referencyjne
+    Vref = 5 * indi # Napięcie referencyjne
     splitValue = 2.5 # Stały czas pierwszej części ładowania kondensatora
     StopV = splitValue * (float(value)) * indi # Już nie pamiętam co to jest ale jest potrzebne :shrug:
-
     z = (Vref * splitValue + StopV) / Vref
     x = (z - splitValue) * 400 * indi
     n = (x/400)+splitValue
     m=x/1000*Vref
+    # Główna funkcja aktualizująca wykresy reagująca na zmiane wartości na Sliderze
+    dc_signal = np.zeros_like(time)
+    for i in range(len(time)):
+        if time[i] < splitValue:
+            dc_signal[i] = float(value)*10
+        else:
+            if time[i]<(n):
+                 dc_signal[i] = -Vref*10
+
+            else:
+                 dc_signal[i] = 0
+
+    # Funkcja prądu stałego niezmienna w czasie
+    line.set_ydata(dc_signal)
+    plt.axhline(y=0, color='r', linestyle='dotted', linewidth=0.5)
+    ax.relim()
+    ax.set_ylim([-100, 100])
+    ax.set_xlim([0,5])
+    canvas.draw()
+    # Wyświetlanie pierwszego wykresu po aktualizacji
+    dual_slope = np.zeros_like(time)
+
+
+
     # Obliczanie zmiennych potrzebnech w póżniejszych obliczeniach oraz w trakcie ewentualnego rozwoju programu
 
     for i in range(len(time)):
@@ -85,11 +98,11 @@ plt.xticks(np.arange(0, 5, step=0.05))
 plt.margins(x=0)
 
 # tytuły wykresów i osi
-ax.set_ylabel('Napięcie')
+ax.set_ylabel('Napięcie  [mV]')
 ax.set_xlabel('Czas')
 ax.set_title('Napięcie wejściowe integratora')
 ax.set_xticks([])
-ax2.set_ylabel('Napięcie')
+ax2.set_ylabel('Napięcie  [V]')
 ax2.set_xlabel('Czas')
 ax2.set_title('Napięcie wyjściowe integratora')
 
@@ -97,8 +110,9 @@ ax2.set_title('Napięcie wyjściowe integratora')
 # Suwak odpowiedzialny za sterowanie napięcia
 # TODO przepisać skale z od -100 do 100 mili voltów
 # TODO na wykresie wejściowym dodać napięcie referncyjne o znaku przeciwnym do napięcia wejściowego
+
 amplitude_slider_label = ttk.Label(app, text="Napięcie wejsciowe")
-amplitude_slider = ttk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot , length=300) # Wygląd i zakres wartości na suwaku
+amplitude_slider = tk.Scale(app, from_=-10, to=10, orient="horizontal", command=update_plot ,tickinterval=1, length=700,showvalue=0) # Wygląd i zakres wartości na suwaku
 amplitude_slider.set(0)  # Wartość początkowa na suwaku
 
 # Ustawianie lementów UI w siatce
